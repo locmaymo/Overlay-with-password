@@ -1,16 +1,18 @@
 const express = require('express');
 const app = express();
 
-const users = {
-  'john': 'secret' 
-};
+let defautlPassword = "1";
 
 app.use(express.json());
 
-app.post('/login', (req, res) => {
-  const { username, password } = req.body;
+app.get("/", (req,res)=>{
+  res.sendFile(__dirname + "/index.html")
+})
 
-  if (users[username] === password) {
+app.post('/login', (req, res) => {
+  const { password } = req.body;
+
+  if (defautlPassword === password) {
     res.json({ success: true });
   } else {
     res.status(400).end();
@@ -18,13 +20,15 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/change-password', (req, res) => {
-  const { username, oldPassword, newPassword } = req.body;
+  const { oldPassword, newPassword } = req.body;
   
-  if (users[username] === oldPassword) {
-    users[username] = newPassword;
+  if (defautlPassword === oldPassword) {
+    defautlPassword = newPassword;
     res.json({ success: true });
   } else {
     res.status(400).end();
   }
 });
 
+
+app.listen(8000,()=>console.log("listen"));

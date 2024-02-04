@@ -1,14 +1,30 @@
 <html>
+
 <head>
   <title>Trang đăng nhập</title>
+  <style>
+    #login-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(40px);
+      background: rgba(0, 0, 0, 0.8);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
 </head>
+
 <body>
 
   <div id="login-overlay">
     <div class="form">
-      <h1>Vui lòng đăng nhập</h1>
-      
-      <input type="text" id="username" placeholder="Tên đăng nhập">
+      <h1>Đăng Nhập SillyTavern</h1>
+
       <input type="password" id="password" placeholder="Mật khẩu">
 
       <button id="login-btn">Đăng nhập</button>
@@ -17,17 +33,17 @@
 
   <div id="content">
 
-    <div class="form" id="change-password-form">
+    <div class="form" >
       <h3>Đổi mật khẩu</h3>
-      
+
       <input type="password" id="old-password" placeholder="Mật khẩu cũ">
       <input type="password" id="new-password" placeholder="Mật khẩu mới">
 
-      <button type="submit">Lưu</button>
+      <button id="change-password-form" >Lưu</button>
     </div>
 
     <!-- Nội dung trang web -->
-<p>content</p>
+    <p>content</p>
   </div>
 
   <script>
@@ -36,36 +52,31 @@
     const changePasswordForm = document.getElementById('change-password-form');
 
     loginBtn.addEventListener('click', () => {
-      const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
-
-      login(username, password); 
+      login(password);
     });
 
-    changePasswordForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
+    changePasswordForm.addEventListener('click', () => {
       const oldPassword = document.getElementById('old-password').value;
       const newPassword = document.getElementById('new-password').value;
-      
+
       changePassword(oldPassword, newPassword);
     });
 
-    function login(username, password) {
+    function login(password) {
       fetch('/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          username,
-          password  
+          password
         })
       }).then(res => {
         if (res.ok) {
           return res.json();
         } else {
-          throw new Error('Đăng nhập không thành công');
+          throw new Error('Sai mật khẩu!');
         }
       }).then(data => {
         loginOverlay.style.display = 'none';
@@ -76,7 +87,7 @@
 
     function changePassword(oldPassword, newPassword) {
       fetch('/change-password', {
-        method: 'POST', 
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -88,7 +99,7 @@
         if (res.ok) {
           return res.json();
         } else {
-          throw new Error('Đổi mật khẩu không thành công');
+          throw new Error('Mật Khẩu cũ không đúng!');
         }
       }).then(data => {
         alert('Đổi mật khẩu thành công!');
@@ -100,4 +111,5 @@
   </script>
 
 </body>
+
 </html>
