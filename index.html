@@ -1,0 +1,103 @@
+<html>
+<head>
+  <title>Trang đăng nhập</title>
+</head>
+<body>
+
+  <div id="login-overlay">
+    <div class="form">
+      <h1>Vui lòng đăng nhập</h1>
+      
+      <input type="text" id="username" placeholder="Tên đăng nhập">
+      <input type="password" id="password" placeholder="Mật khẩu">
+
+      <button id="login-btn">Đăng nhập</button>
+    </div>
+  </div>
+
+  <div id="content">
+
+    <div class="form" id="change-password-form">
+      <h3>Đổi mật khẩu</h3>
+      
+      <input type="password" id="old-password" placeholder="Mật khẩu cũ">
+      <input type="password" id="new-password" placeholder="Mật khẩu mới">
+
+      <button type="submit">Lưu</button>
+    </div>
+
+    <!-- Nội dung trang web -->
+<p>content</p>
+  </div>
+
+  <script>
+    const loginOverlay = document.getElementById('login-overlay');
+    const loginBtn = document.getElementById('login-btn');
+    const changePasswordForm = document.getElementById('change-password-form');
+
+    loginBtn.addEventListener('click', () => {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      login(username, password); 
+    });
+
+    changePasswordForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const oldPassword = document.getElementById('old-password').value;
+      const newPassword = document.getElementById('new-password').value;
+      
+      changePassword(oldPassword, newPassword);
+    });
+
+    function login(username, password) {
+      fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username,
+          password  
+        })
+      }).then(res => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error('Đăng nhập không thành công');
+        }
+      }).then(data => {
+        loginOverlay.style.display = 'none';
+      }).catch(err => {
+        alert(err.message);
+      });
+    }
+
+    function changePassword(oldPassword, newPassword) {
+      fetch('/change-password', {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          oldPassword,
+          newPassword
+        })
+      }).then(res => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error('Đổi mật khẩu không thành công');
+        }
+      }).then(data => {
+        alert('Đổi mật khẩu thành công!');
+      }).catch(err => {
+        alert(err.message);
+      });
+    }
+
+  </script>
+
+</body>
+</html>
